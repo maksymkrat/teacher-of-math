@@ -62,17 +62,30 @@ canvas.addEventListener("touchend", stop, false);
 canvas.addEventListener("mouseup", stop, false);
 canvas.addEventListener("mouseout", stop, false);
 
+let fs = require('fs');
+let files = fs.readdirSync('/assets/photos/');
+
 pickDefaultPhoto();
 function pickDefaultPhoto(){
     let file_png = new Image();
     let file_jpg = new Image();
+    let file_jpeg = new Image();
+    let file_svg = new Image();
      file_png.src =  "default_img.png";
      file_jpg.src =  "default_img.jpg";
+     file_jpeg.src =  "default_img.jpeg";
+     file_svg.src =  "default_img.svg";
      //default_img = file_png;
     file_jpg.onload = function (){
         default_img = this;
     };
     file_png.onload = function (){
+        default_img = this;
+    };
+    file_jpeg.onload = function (){
+        default_img = this;
+    };
+    file_svg.onload = function (){
         default_img = this;
     };
 }
