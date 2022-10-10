@@ -8,7 +8,6 @@ context.fillStyle = start_background_color;
 context.fillRect(0, 0 ,canvas.width,canvas.height);
 
 let default_img = new Image();
- //default_img.src = "default_img.png";
 
 let draw_color = "black";
 
@@ -244,7 +243,8 @@ function redoLast(){
     }
 }
 function setDefaultImg(){
-    context.drawImage(default_img, 0,0);  //must have width and height like in canvas
+    setAdaptiveImage(default_img);
+    //context.drawImage(default_img, 0,0);  //must have width and height like in canvas
     addChangesToHistory();
 }
 function selectFile(input) {
@@ -259,23 +259,26 @@ function selectFile(input) {
     }
 
     img.onload = function(){
-        let imgHeight = img.height;
-        let imgWidth = img.width;
-        let marginX = 0;
-        let marginY = 0;
-        if(imgHeight >= imgWidth){
-            imgWidth = Math.round((img.width * canvas.height) / imgHeight);
-            imgHeight = canvas.height;
-            marginX = Math.round((canvas.width - imgWidth) / 2);
-        }else {
-            imgHeight = Math.round((img.height * canvas.width) / imgWidth);
-            imgWidth = canvas.width;
-            marginY = Math.round((canvas.height - imgHeight) / 2);
-        }
-
-        context.drawImage(img, marginX,marginY, imgWidth,imgHeight);
+        setAdaptiveImage(img)
     }
     reader.readAsDataURL(file);
+}
+function setAdaptiveImage(img){
+    let imgHeight = img.height;
+    let imgWidth = img.width;
+    let marginX = 0;
+    let marginY = 0;
+    if(imgHeight >= imgWidth){
+        imgWidth = Math.round((img.width * canvas.height) / imgHeight);
+        imgHeight = canvas.height;
+        marginX = Math.round((canvas.width - imgWidth) / 2);
+    }else {
+        imgHeight = Math.round((img.height * canvas.width) / imgWidth);
+        imgWidth = canvas.width;
+        marginY = Math.round((canvas.height - imgHeight) / 2);
+    }
+
+    context.drawImage(img, marginX,marginY, imgWidth,imgHeight);
 }
 
 function selectLayer(element){
@@ -402,3 +405,4 @@ function drawArrow(ctx, fromx, fromy, tox, toy, arrowWidth, color){
     ctx.restore();
    
 }
+
