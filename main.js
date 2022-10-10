@@ -8,7 +8,7 @@ context.fillStyle = start_background_color;
 context.fillRect(0, 0 ,canvas.width,canvas.height);
 
 let default_img = new Image();
- default_img.src = "default_img.png";
+ //default_img.src = "default_img.png";
 
 let draw_color = "black";
 
@@ -38,7 +38,21 @@ let temporaryIdHistoryLayer = null;
 
 let boolSelectLayer = false;
 
- 
+function clearCanvas(){
+    temporaryIdHistoryLayer = null;
+    restore_array = [];
+    boolSelectLayer = null;
+
+    context.fillStyle = start_background_color;
+    context.fillRect(0, 0 ,canvas.width,canvas.height);
+
+    restore_array = []
+    index = -1;
+
+    //history
+    let history_container = document.getElementsByClassName('history_changes')[0];
+    history_container.innerHTML = "";
+}
 canvas.addEventListener("touchstart", start, false);
 canvas.addEventListener("touchmove", draw, false); 
 
@@ -185,22 +199,7 @@ function stop(event){
     fromY = 0;
     event.preventDefault();
 }
-function clearCanvas(){
-    temporaryIdHistoryLayer = null;
-    restore_array = [];
-    boolSelectLayer = null;
-    
-    context.fillStyle = start_background_color;
-    context.clearRect(0,0 , canvas.width, canvas.height);
-    context.fillRect(0,0 , canvas.width, canvas.height);
-    
-    restore_array = []
-    index = -1;
-    
-    //history
-    let history_container = document.getElementsByClassName('history_changes')[0];
-    history_container.innerHTML = "";
-}
+
 function removeLast(){
     
     if(index <= 0){
@@ -256,6 +255,7 @@ function selectFile(input) {
     reader.onload = function(x){
         img.src = x.target.result;
         setTimeout(addChangesToHistory, 100);
+        input.value = '';
     }
 
     img.onload = function(){
