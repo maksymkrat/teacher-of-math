@@ -62,8 +62,6 @@ canvas.addEventListener("touchend", stop, false);
 canvas.addEventListener("mouseup", stop, false);
 canvas.addEventListener("mouseout", stop, false);
 
-let fs = require('fs');
-let files = fs.readdirSync('/assets/photos/');
 
 pickDefaultPhoto();
 function pickDefaultPhoto(){
@@ -187,13 +185,16 @@ function stop(event){
     }
     
     if(is_symbol && event.type != "mouseout"){
-        if(is_square){
-            context.font = `${Math.round( draw_width * 3 * 2)}px arial`
-        }else {
-            context.font = `${Math.round( draw_width * 3)}px arial`
-        }
         context.fillStyle = draw_color;
-        context.fillText(print_symbol, (positionX- parseInt(draw_width)),(positionY+parseInt(draw_width)));
+        if(is_square){
+            context.font = `${Math.round( draw_width * 3 * 2)}px arial`;
+            context.fillText(print_symbol, (positionX- parseInt(draw_width) * 1.6),(positionY+parseInt(draw_width) * 1.6));
+
+        }else {
+            context.font = `${Math.round( draw_width * 3)}px arial`;
+            context.fillText(print_symbol, (positionX- parseInt(draw_width)),(positionY+parseInt(draw_width)));
+
+        }
         addChangesToHistory();
     }
    
