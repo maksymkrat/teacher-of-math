@@ -3,11 +3,12 @@ canvas.width = 500;
 canvas.height = 500;
 
 let context = canvas.getContext("2d");
-let start_background_color = "white "
+let start_background_color = "white"
 context.fillStyle = start_background_color;
 context.fillRect(0, 0 ,canvas.width,canvas.height);
 
 let default_img = new Image();
+default_img.src = "default_img.png";
 
 let draw_color = "black";
 
@@ -53,7 +54,7 @@ function clearCanvas(){
     history_container.innerHTML = "";
 }
 canvas.addEventListener("touchstart", start, false);
-canvas.addEventListener("touchmove", draw, false); 
+canvas.addEventListener("touchmove", draw, false);
 
 canvas.addEventListener("mousedown", start, false);
 canvas.addEventListener("mousemove", draw, false);
@@ -69,11 +70,11 @@ function pickDefaultPhoto(){
     let file_jpg = new Image();
     let file_jpeg = new Image();
     let file_svg = new Image();
-     file_png.src =  "default_img.png";
-     file_jpg.src =  "default_img.jpg";
-     file_jpeg.src =  "default_img.jpeg";
-     file_svg.src =  "default_img.svg";
-     //default_img = file_png;
+    file_png.src =  "default_img.png";
+    file_jpg.src =  "default_img.jpg";
+    file_jpeg.src =  "default_img.jpeg";
+    file_svg.src =  "default_img.svg";
+    //default_img = file_png;
     file_jpg.onload = function (){
         default_img = this;
     };
@@ -93,47 +94,47 @@ function changeColor(element){
 
 let executeDoubleHistory  = false;
 function start(event){
-        is_drawing = true;
-        fromX = positionX;
-        fromY = positionY;
-        if(is_arrow){
-            executeDoubleHistory = true;
-        }
-       
-        if(event.type == "mousedown"){
-            touched_canvas = true;
-           
-        }
-        context.beginPath();
-        context.moveTo(positionX,positionY);
-    
+    is_drawing = true;
+    fromX = positionX;
+    fromY = positionY;
+    if(is_arrow){
+        executeDoubleHistory = true;
+    }
+
+    if(event.type == "mousedown"){
+        touched_canvas = true;
+
+    }
+    context.beginPath();
+    context.moveTo(positionX,positionY);
+
     event.preventDefault();
 }
 
 function  draw(event){
-     positionX = event.clientX - canvas.offsetLeft;
-     positionY = event.clientY - canvas.offsetTop;
-    
+    positionX = event.clientX - canvas.offsetLeft;
+    positionY = event.clientY - canvas.offsetTop;
+
     if(is_arrow && fromY != positionY && fromX != positionX && fromX != 0 && fromY != 0){
         if(boolSelectLayer){
             addChangesToHistory()
         }
-        
+
         addChangesToHistory();
-        
+
         if(event.type != 'mouseup' ){
             removeLast();
         }
         drawArrow(context,fromX,fromY,positionX,positionY,draw_width,draw_color);
     }
-     
+
     if(is_drawing){
         if(!is_symbol && !is_arrow){
             context.lineTo(positionX,positionY);
             context.lineCap = "round";
             context.lineJoin = "round";
         }
-        
+
         context.strokeStyle = draw_color;
         context.lineWidth = draw_width;
         context.stroke();
@@ -147,15 +148,15 @@ function stop(event){
         if(fromY != positionY && fromX != positionX){
             drawArrow(context,fromX,fromY,positionX,positionY,draw_width,draw_color);
             let userText = prompt('Sign the arrow',"");
-            
+
             if(userText == null){
                 userText = "";
             }
-            
+
             context.font = ` bold 15px arial`
             context.fillStyle = draw_color;
             let a = userText.length*8 + parseInt(draw_width);
-            
+
             if(positionX< userText.length*8 + parseInt(draw_width)){
                 if(fromY < positionY){
                     if(positionY <= fromY + parseInt(draw_width) ){
@@ -183,7 +184,7 @@ function stop(event){
             }
         }
     }
-    
+
     if(is_symbol && event.type != "mouseout"){
         context.fillStyle = draw_color;
         if(is_square){
@@ -197,24 +198,24 @@ function stop(event){
         }
         addChangesToHistory();
     }
-   
+
     if(is_drawing){
-         context.stroke();
-         context.closePath();
-         is_drawing = false;
-         
+        context.stroke();
+        context.closePath();
+        is_drawing = false;
+
         if( touched_canvas == true && fromX != positionX && fromY != positionY){
             addChangesToHistory();
             touched_canvas = false;
         }
-     }
+    }
     fromX = 0;
     fromY = 0;
     event.preventDefault();
 }
 
 function removeLast(){
-    
+
     if(index <= 0){
         clearCanvas();
     } else {
@@ -226,21 +227,21 @@ function removeLast(){
         index -= 1;
         restore_array.pop();
         context.putImageData(restore_array[index], 0, 0);
-      
+
     }
 }
 function undoLast(){
-        if(temporaryIdHistoryLayer != null){
-            let selectedLayer = temporaryIdHistoryLayer;
-            let idNum = parseInt(selectedLayer.substring(6, selectedLayer.length));
+    if(temporaryIdHistoryLayer != null){
+        let selectedLayer = temporaryIdHistoryLayer;
+        let idNum = parseInt(selectedLayer.substring(6, selectedLayer.length));
 
-            let  goToItem = document.getElementById(`Layer_${idNum - 1}`);
-            if(goToItem != null){
-                selectLayer(goToItem);
-                goToItem.scrollIntoView();
-            }
-
+        let  goToItem = document.getElementById(`Layer_${idNum - 1}`);
+        if(goToItem != null){
+            selectLayer(goToItem);
+            goToItem.scrollIntoView();
         }
+
+    }
 }
 
 function redoLast(){
@@ -258,7 +259,6 @@ function redoLast(){
 }
 function setDefaultImg(){
     setAdaptiveImage(default_img);
-    //context.drawImage(default_img, 0,0);  //must have width and height like in canvas
     addChangesToHistory();
 }
 function selectFile(input) {
@@ -291,23 +291,28 @@ function setAdaptiveImage(img){
         imgWidth = canvas.width;
         marginY = Math.round((canvas.height - imgHeight) / 2);
     }
+    
+    context.clearRect(0, 0, canvas.width, canvas.height);
+
+    context.fillStyle = "transparent";
+    context.fillRect(0, 0 ,canvas.width,canvas.height);
 
     context.drawImage(img, marginX,marginY, imgWidth,imgHeight);
 }
 
 function selectLayer(element){
     boolSelectLayer = true;
-    
+
     setStyleForCurrentLayer(element)
     let canvas_id = element.id;
-    
+
     let id = parseInt(canvas_id.substring(6, canvas_id.length));
     context.putImageData(restore_array[id - 1], 0, 0);
 
 }
 
 function setStyleForCurrentLayer(element){
-   
+
     if(temporaryIdHistoryLayer != element.id && temporaryIdHistoryLayer != null){
         let removeStyleElement = document.getElementById(temporaryIdHistoryLayer);
         removeStyleElement.style.borderStyle = "hidden";
@@ -329,7 +334,7 @@ function setStyleButton(element){
 
 function addChangesToHistory(){
     let history_container = document.getElementsByClassName('history_changes')[0];
-   
+
     let img_layer = document.createElement('img');
     img_layer.height = 100;
     img_layer.width = 100;
@@ -342,20 +347,20 @@ function addChangesToHistory(){
     history_container.appendChild(img_layer);
     history_container.scrollTop = history_container.scrollHeight;
     setStyleForCurrentLayer(img_layer);
-    
+
     let current_layer = context.getImageData(0,0 , canvas.width, canvas.height);
-    
+
     restore_array.push(current_layer);
     index += 1;
-    
+
     boolSelectLayer  = false;
 }
 function onSymbol(symbol){
-     is_symbol = true;
-     is_square = false;
-     is_arrow = false;
-     print_symbol = symbol.innerText;
-     setStyleButton(symbol);
+    is_symbol = true;
+    is_square = false;
+    is_arrow = false;
+    print_symbol = symbol.innerText;
+    setStyleButton(symbol);
 }
 
 function onSymbolSquare(symbol){
@@ -366,11 +371,11 @@ function onSymbolSquare(symbol){
     setStyleButton(symbol);
 }
 function onPen(element){
-     is_symbol = false;
-     is_square =false;
-     is_arrow = false;
+    is_symbol = false;
+    is_square =false;
+    is_arrow = false;
     setStyleButton(element);
-     
+
 }
 function onArrow(element){
     fromX = 0;
@@ -417,6 +422,6 @@ function drawArrow(ctx, fromx, fromy, tox, toy, arrowWidth, color){
 
     ctx.stroke();
     ctx.restore();
-   
+
 }
 
